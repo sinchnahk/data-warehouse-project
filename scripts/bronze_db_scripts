@@ -59,3 +59,10 @@ CREATE TABLE bronze_db.erp_px_cat_g1v2 (
     subcat VARCHAR(50),
     maintenance VARCHAR(50)
 );
+
+-- Loading data from csv file to bronze_db.crm_cust_info table
+LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\cust_info.csv'
+INTO TABLE bronze_db.crm_cust_info
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\r\n'
+IGNORE 1 ROWS;
