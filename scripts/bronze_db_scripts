@@ -1,3 +1,22 @@
+/*
+====================================================================
+BRONZE LAYER DATA INGESTION SCRIPT
+====================================================================
+
+Description:
+This script performs the following actions:
+1. Drops existing bronze tables (if present)
+2. Creates bronze staging tables
+3. Loads CRM and ERP CSV source files
+4. Measures individual table load times
+5. Calculates total bronze layer load duration
+
+Purpose:
+Implements raw data ingestion layer for the Data Warehouse project.
+
+Author: <Sinchana H K>
+====================================================================
+*/
 -- CRM Customer Info
 DROP TABLE IF EXISTS bronze_db.crm_cust_info;
 CREATE TABLE bronze_db.crm_cust_info (
@@ -61,51 +80,90 @@ CREATE TABLE bronze_db.erp_px_cat_g1v2 (
 );
 
 -- Loading data from csv file to bronze_db.crm_cust_info table
-truncate table bronze_db.crm_cust_info;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\cust_info.csv'
+
+select '=========================================================================================';
+SELECT 'Loading CRM tables';
+SET @load_start_time =now(6);
+SET @start_time = NOW(6);
+
+TRUNCATE TABLE bronze_db.crm_cust_info;
+
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\cust_info.csv'
 INTO TABLE bronze_db.crm_cust_info
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
-
-
+SELECT 
+'crm_cust_info load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
 
 -- Loading data from csv file to bronze_db.crm_prd_info table
+SET @start_time = NOW(6);
 truncate table bronze_db.crm_prd_info;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\prd_info.csv'
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\prd_info.csv'
 INTO TABLE bronze_db.crm_prd_info
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
+SELECT 
+'crm_prd_info load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
 
 -- Loading data from csv file to bronze_db.crm_sales_details table
+SET @start_time = NOW(6);
 truncate table bronze_db.crm_sales_details;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\sales_details.csv'
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_crm\\sales_details.csv'
 INTO TABLE bronze_db.crm_sales_details
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
+SELECT 
+' crm_sales_details load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
 
 -- Loading data from csv file to bronze_db.erp_cust_az12 table
+SELECT 'Loading ERP tables';
+SET @start_time = NOW(6);
 truncate table bronze_db.erp_cust_az12;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\CUST_AZ12.csv'
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\CUST_AZ12.csv'
 INTO TABLE bronze_db.erp_cust_az12
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
+SELECT 
+'erp_cust_az12 load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
+
 
 -- Loading data from csv file to bronze_db.erp_loc_a101 table
+SET @start_time = NOW(6);
 truncate table bronze_db.erp_loc_a101;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\LOC_A101.csv'
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\LOC_A101.csv'
 INTO TABLE bronze_db.erp_loc_a101
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
+SELECT 
+'erp_loc_a101 load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
+
+
 
 -- Loading data from csv file to bronze_db.erp_px_cat_g1v2 table
+SET @start_time = NOW(6);
 truncate table bronze_db.erp_px_cat_g1v2;
-LOAD DATA LOCAL INFILE 'C:\\Users\\sinch\\Downloads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\PX_CAT_G1V2.csv'
+LOAD DATA INFILE 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\dbc9660c89a3480fa5eb9bae464d6c07\\sql-data-warehouse-project\\datasets\\source_erp\\PX_CAT_G1V2.csv'
 INTO TABLE bronze_db.erp_px_cat_g1v2
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 ROWS;
+SELECT 
+'erp_px_cat_g1v2 load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @start_time, now(6))/1000000, 3) AS execution_time;
+
+
+SELECT 
+'bronze layer load time (seconds)' AS label,
+ROUND(TIMESTAMPDIFF(MICROSECOND, @load_start_time, now(6))/1000000, 3) AS execution_time;
+
+select 'bronze layer loaded successfully !';
